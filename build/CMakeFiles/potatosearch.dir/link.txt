@@ -1,0 +1,1 @@
+/usr/bin/c++    -std=c++11 -g    CMakeFiles/potatosearch.dir/potatosearch.cc.o  -o potatosearch -rdynamic -lm -lpthread 

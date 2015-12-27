@@ -1,0 +1,1 @@
+/home/anavi/Dropbox/UFAM/Graduação/RI/potato search engine/build/CMakeFiles/potatosearch.dir
