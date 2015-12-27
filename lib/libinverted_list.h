@@ -3,8 +3,6 @@
 
 #include "libgeneral.h"
 
-#define hashFunction bernstein_hash
-
 typedef struct {
 	int id;
 	int freq;
@@ -29,6 +27,7 @@ typedef struct term_node {
 } TermNode;
 
 typedef TermNode* Index;
+
 typedef unsigned long int hash_t;
 
 #endif

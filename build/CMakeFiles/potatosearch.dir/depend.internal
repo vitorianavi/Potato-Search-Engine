@@ -4,10 +4,14 @@
 CMakeFiles/potatosearch.dir/potatosearch.cc.o
  /home/anavi/Dropbox/UFAM/Graduação/RI/potato search engine/lib/defines.h
  /home/anavi/Dropbox/UFAM/Graduação/RI/potato search engine/lib/libgeneral.h
+ /home/anavi/Dropbox/UFAM/Graduação/RI/potato search engine/lib/libhash.cc
+ /home/anavi/Dropbox/UFAM/Graduação/RI/potato search engine/lib/libhash.h
  /home/anavi/Dropbox/UFAM/Graduação/RI/potato search engine/lib/libindexer.cc
  /home/anavi/Dropbox/UFAM/Graduação/RI/potato search engine/lib/libindexer.h
  /home/anavi/Dropbox/UFAM/Graduação/RI/potato search engine/lib/libinverted_list.cc
  /home/anavi/Dropbox/UFAM/Graduação/RI/potato search engine/lib/libinverted_list.h
+ /home/anavi/Dropbox/UFAM/Graduação/RI/potato search engine/lib/libquery_processer.cc
+ /home/anavi/Dropbox/UFAM/Graduação/RI/potato search engine/lib/libquery_processer.h
  /home/anavi/Dropbox/UFAM/Graduação/RI/potato search engine/lib/libstring_operations.cc
  /home/anavi/Dropbox/UFAM/Graduação/RI/potato search engine/lib/libstring_operations.h
  /home/anavi/Dropbox/UFAM/Graduação/RI/potato search engine/potatosearch.cc

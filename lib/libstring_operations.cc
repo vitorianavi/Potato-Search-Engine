@@ -10,6 +10,23 @@ unsigned char _upper_case[256];
 
 using namespace std;
 
+void getNextTerm(char *string, char *term, int *begin) {
+  int i = *begin, j = 0;
+
+  term[0] = '\0';
+  while(string[i] == ' ' && string[i] != '\0'){
+    i++;
+  }
+
+  while(string[i] != ' ' && string[i] != '\0'){
+    term[j] = string[i];
+    j++; i++;
+  }
+  term[j] = '\0';
+
+  *begin = i;
+}
+
 void loadStopWordsHash(unordered_map<string, int>& swords_hash, const char *file_name) {
   FILE *file;
   char term_ch[50];

@@ -20,20 +20,26 @@ defines.h
 iostream
 -
 
+/home/anavi/Dropbox/UFAM/Graduação/RI/potato search engine/lib/libhash.cc
+libhash.h
+/home/anavi/Dropbox/UFAM/Graduação/RI/potato search engine/lib/libhash.h
+
+/home/anavi/Dropbox/UFAM/Graduação/RI/potato search engine/lib/libhash.h
+
 /home/anavi/Dropbox/UFAM/Graduação/RI/potato search engine/lib/libindexer.cc
 libindexer.h
 /home/anavi/Dropbox/UFAM/Graduação/RI/potato search engine/lib/libindexer.h
-fstream
--
-sstream
--
-unordered_map
--
 
 /home/anavi/Dropbox/UFAM/Graduação/RI/potato search engine/lib/libindexer.h
 libgeneral.h
 /home/anavi/Dropbox/UFAM/Graduação/RI/potato search engine/lib/libgeneral.h
 dirent.h
+-
+fstream
+-
+sstream
+-
+unordered_map
 -
 
 /home/anavi/Dropbox/UFAM/Graduação/RI/potato search engine/lib/libinverted_list.cc
@@ -43,6 +49,18 @@ libinverted_list.h
 /home/anavi/Dropbox/UFAM/Graduação/RI/potato search engine/lib/libinverted_list.h
 libgeneral.h
 /home/anavi/Dropbox/UFAM/Graduação/RI/potato search engine/lib/libgeneral.h
+
+/home/anavi/Dropbox/UFAM/Graduação/RI/potato search engine/lib/libquery_processer.cc
+libquery_processer.h
+/home/anavi/Dropbox/UFAM/Graduação/RI/potato search engine/lib/libquery_processer.h
+
+/home/anavi/Dropbox/UFAM/Graduação/RI/potato search engine/lib/libquery_processer.h
+fstream
+-
+sstream
+-
+unordered_map
+-
 
 /home/anavi/Dropbox/UFAM/Graduação/RI/potato search engine/lib/libstring_operations.cc
 libstring_operations.h
@@ -59,8 +77,12 @@ libgeneral.h
 /home/anavi/Dropbox/UFAM/Graduação/RI/potato search engine/potatosearch.cc
 lib/libstring_operations.cc
 /home/anavi/Dropbox/UFAM/Graduação/RI/potato search engine/lib/libstring_operations.cc
+lib/libhash.cc
+/home/anavi/Dropbox/UFAM/Graduação/RI/potato search engine/lib/libhash.cc
 lib/libinverted_list.cc
 /home/anavi/Dropbox/UFAM/Graduação/RI/potato search engine/lib/libinverted_list.cc
 lib/libindexer.cc
 /home/anavi/Dropbox/UFAM/Graduação/RI/potato search engine/lib/libindexer.cc
+lib/libquery_processer.cc
+/home/anavi/Dropbox/UFAM/Graduação/RI/potato search engine/lib/libquery_processer.cc
 

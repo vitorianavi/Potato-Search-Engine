@@ -1,9 +1,87 @@
 #include "libindexer.h"
-#include <fstream>      // std::ifstream
-#include <sstream>
-#include <unordered_map>
 
 using namespace std;
+
+void initIndex(Index *index, int size) {
+	int i;
+
+	for (i = 0; i < size; i++) {
+		index[i] = NULL;
+	}
+}
+
+void printIndex(Index *index, int size) {
+	int i;
+	InvListNode *aux;
+
+	for (i = 0; i < size; i++) {
+		if(index[i] != NULL) {
+			printf("[%s] -> |", index[i]->term.str);
+			aux = index[i]->list;
+			while(aux) {
+				printf("%d| ", aux->doc.id);
+				aux = aux->next;
+			}
+			printf("\n");
+		}
+	}
+}
+
+void indexTerm(Index h_index[], char term_str[], int id_doc) {
+	hash_t index;
+	TermNode *aux;
+
+	index = hashFunction(term_str) % INDEX_SIZE;
+
+	if(h_index[index] == NULL) {
+		h_index[index] = allocateTerm(term_str);
+		insertList(h_index[index], id_doc, 1);
+
+	} else {
+		aux = findTermOrAlloc(h_index[index], term_str);
+		insertList(aux, id_doc, 1);
+	}
+}
+
+int storeIndex(Index h_index[], int n_docs, const char index_name[]) {
+	FILE *index_file;
+	TermNode *term_aux, *termtrash;
+	InvListNode *doc_aux, *doctrash;
+	int i, n=0;
+
+	if((index_file = fopen(index_name, "wb")) == NULL) {
+		printf("Fail to create index file [%s].", index_name);
+	}
+
+	fwrite(&n_docs, sizeof(int), 1, index_file);
+	
+	for (i = 1; i < INDEX_SIZE; i++) {
+		term_aux = h_index[i];
+
+		while(term_aux) {
+			term_aux->term.offset = ftell(index_file) + sizeof(Term);		
+			fwrite(&(term_aux->term), sizeof(Term), 1, index_file);
+
+			doc_aux = term_aux->list;
+
+			while(doc_aux) {
+				fwrite(&(doc_aux->doc), sizeof(Doc), 1, index_file);
+
+				doctrash = doc_aux;
+				doc_aux = doc_aux->next;
+				free(doctrash);
+			}
+
+			termtrash = term_aux;
+			term_aux = term_aux->next_term;
+			free(termtrash);
+			n++;
+		}
+	}
+	fclose(index_file);
+
+	return n;
+}
 
 void index(char *dir_path) {
 	DIR *dir;
@@ -48,7 +126,7 @@ void index(char *dir_path) {
 							strcpy(dterm, term.c_str());
 							normText(dterm, norm_term);
 							if(stopWordsHash.count(string(norm_term)) == 0) {
-								indexTerm(index, norm_term, id, 1, INDEX_SIZE);
+								indexTerm(index, norm_term, id);
 							}
 						}
 					} else if(!stop && term.compare("PN") != 0 && term.compare("AN") != 0 && term.compare("AU") != 0 && term.compare("SO") != 0 && term.compare("RF") != 0 && term.compare("CT") != 0)	{		
@@ -57,7 +135,7 @@ void index(char *dir_path) {
 							strcpy(dterm, term.c_str());
 							normText(dterm, norm_term);
 							if(stopWordsHash.count(string(norm_term)) == 0) {
-								indexTerm(index, norm_term, id, 1, INDEX_SIZE);
+								indexTerm(index, norm_term, id);
 							}
 
 						} while(lineStream >> term);
@@ -73,11 +151,11 @@ void index(char *dir_path) {
 			}
 		}
 		//printIndex(index, INDEX_SIZE);
-		n_terms = storeIndex(index, n_docs, INDEX_SIZE, INDEX_FILE);
+		n_terms = storeIndex(index, n_docs, INDEX_FILE);
 		free(index);
 		closedir(dir);
 
-		printf("Documentos: %d\nTermos:%d\n", n_docs, n_terms);
+		printf("Documents: %d\nTerms:%d\n", n_docs, n_terms);
 
 	} else {
 		printf("Could not open directory [%s].", dir_path);
