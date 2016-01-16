@@ -6,5 +6,6 @@
 #include <fstream>      // std::ifstream
 #include <sstream>
 #include <unordered_map>
+#include <math.h>
 
 #endif

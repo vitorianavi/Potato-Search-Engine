@@ -5,4 +5,14 @@
 
 typedef unsigned long int hash_t;
 
+typedef struct doc {
+	int id;
+	float score;
+} DocResult;
+
+typedef struct {
+	int id;
+	float norm;
+} DocInfo;
+
 #endif

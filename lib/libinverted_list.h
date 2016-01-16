@@ -5,7 +5,7 @@
 
 typedef struct {
 	int id;
-	int freq;
+	float tf;
 } Doc;
 
 typedef struct list_node {
@@ -15,9 +15,9 @@ typedef struct list_node {
 
 typedef struct {
 	char str[MAX_TERM_SIZE];
-	int acc_frequency;
 	long int offset;
 	int list_size;
+	float idf;
 } Term;
 
 typedef struct term_node {

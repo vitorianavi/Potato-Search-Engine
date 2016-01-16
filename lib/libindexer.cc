@@ -43,7 +43,45 @@ void indexTerm(Index h_index[], char term_str[], int id_doc) {
 	}
 }
 
-int storeIndex(Index h_index[], int n_docs, const char index_name[]) {
+void calcNormDocuments(DocInfo hash_info[]) {
+	int i;
+
+	for (i = 0; i < HASH_SIZE; i++) {
+		if(hash_info[i].id != 0) {
+			hash_info[i].norm = sqrt(hash_info[i].norm);
+		}
+	}
+}
+
+void calcTfIdf(Index index[], DocInfo hash_info[], int n_docs) {
+	TermNode *term_aux;
+	InvListNode *doc_aux;
+	float weig;
+	int i;
+
+	for (i = 0; i < INDEX_SIZE; i++) {
+		term_aux = index[i];
+		while(term_aux) {
+			term_aux->term.idf = (float) n_docs/(float)term_aux->term.list_size;
+			term_aux->term.idf = logf(1+term_aux->term.idf);
+
+			doc_aux = term_aux->list;
+			while(doc_aux) {
+				doc_aux->doc.tf = 1+logf(doc_aux->doc.tf);
+				weig = doc_aux->doc.tf*term_aux->term.idf;
+				insertHashInfo(doc_aux->doc.id, weig*weig, hash_info, HASH_SIZE);
+
+				doc_aux = doc_aux->next;
+			}
+
+			term_aux = term_aux->next_term;
+		}
+	}
+
+	calcNormDocuments(hash_info);
+}
+
+int storeIndex(Index h_index[], const char index_name[]) {
 	FILE *index_file;
 	TermNode *term_aux, *termtrash;
 	InvListNode *doc_aux, *doctrash;
@@ -52,8 +90,6 @@ int storeIndex(Index h_index[], int n_docs, const char index_name[]) {
 	if((index_file = fopen(index_name, "wb")) == NULL) {
 		printf("Fail to create index file [%s].", index_name);
 	}
-
-	fwrite(&n_docs, sizeof(int), 1, index_file);
 	
 	for (i = 1; i < INDEX_SIZE; i++) {
 		term_aux = h_index[i];
@@ -83,6 +119,25 @@ int storeIndex(Index h_index[], int n_docs, const char index_name[]) {
 	return n;
 }
 
+void storeDocInfo(DocInfo hash_info[], int n_docs, const char file_name[]) {
+	FILE *docinfo_file;
+	int i;
+
+	if((docinfo_file = fopen(file_name, "wb")) == NULL) {
+		printf("Fail to create index file [%s].", file_name);
+	}
+
+	fwrite(&n_docs, sizeof(int), 1, docinfo_file);
+
+	for (i = 0; i < HASH_SIZE; i++)	{
+		if(hash_info[i].id != 0) {
+			fwrite(&(hash_info[i]), sizeof(DocInfo), 1, docinfo_file);
+		}
+	}
+
+	fclose(docinfo_file);
+}
+
 void index(char *dir_path) {
 	DIR *dir;
 	struct dirent *ent;
@@ -91,11 +146,13 @@ void index(char *dir_path) {
 	char dterm[MAX_TERM_SIZE], norm_term[MAX_TERM_SIZE], file_name[300];
 
 	Index *index;
+	DocInfo hash_info[HASH_SIZE];
 	unordered_map<string, int> stopWordsHash;
 	int n_docs = 0, n_terms;
 	
 	index = (Index*) malloc(sizeof(Index)*INDEX_SIZE);
 	initIndex(index, INDEX_SIZE);
+	initHashInfo(hash_info, HASH_SIZE);
 	loadStopWordsHash(stopWordsHash, STOPWORDS_FILE);
 
 	if ((dir = opendir(dir_path)) != NULL) {
@@ -117,6 +174,7 @@ void index(char *dir_path) {
 						stop = 0;
 						lineStream >> term;
 						id = atoi(term.c_str());
+
 						printf("id: %d\n", id);
 						n_docs++;
 
@@ -125,7 +183,7 @@ void index(char *dir_path) {
 						while(lineStream >> term) {
 							strcpy(dterm, term.c_str());
 							normText(dterm, norm_term);
-							if(stopWordsHash.count(string(norm_term)) == 0) {
+							if(stopWordsHash.count(string(norm_term)) == 0 && *norm_term != 0) {
 								indexTerm(index, norm_term, id);
 							}
 						}
@@ -134,7 +192,7 @@ void index(char *dir_path) {
 						do {
 							strcpy(dterm, term.c_str());
 							normText(dterm, norm_term);
-							if(stopWordsHash.count(string(norm_term)) == 0) {
+							if(stopWordsHash.count(string(norm_term)) == 0 && *norm_term != 0) {
 								indexTerm(index, norm_term, id);
 							}
 
@@ -150,8 +208,11 @@ void index(char *dir_path) {
 				}
 			}
 		}
-		//printIndex(index, INDEX_SIZE);
-		n_terms = storeIndex(index, n_docs, INDEX_FILE);
+		calcTfIdf(index, hash_info, n_docs);
+	//	printIndex(index, INDEX_SIZE);
+		n_terms = storeIndex(index, INDEX_FILE);
+		storeDocInfo(hash_info, n_docs, DOCINFO_FILE);
+		
 		free(index);
 		closedir(dir);
 
